@@ -9,6 +9,7 @@ Array and list are two common data structures. Array allow random access to elem
 ## Example
 
 ```C++
+#include <iostream>
 #include "ab_tree.h"
 
 int main(void)
@@ -119,7 +120,7 @@ class ab_tree;
 
 ##### Modifiers
 
-| unction       | description                                                  |
+| function      | description                                                  |
 | ------------- | ------------------------------------------------------------ |
 | clear         | clears the contents<br />*(public member function)*          |
 | emplace_front | constructs an element in-place at the beginning<br />*(public member function)* |
