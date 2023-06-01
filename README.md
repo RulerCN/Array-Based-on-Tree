@@ -1,10 +1,10 @@
 # Array Based on Tree
 
-An Array Based on Tree (ABT) is a data structure that represents an array in the form of a self-balancing binary tree that maintains a balance between the size of its left and right subtrees. Unlike binary search tree that sort nodes based on their key values, ABT maintains the insertion order of elements. Compared with traditional array, ABT not only supports random access but also have editability. ABT supports the standard array and list operations such as random access, insertion, and deletion in O(log n) time.
+An Array Based on Tree (ABT) is a data structure that represents an array in the form of a self-balancing binary tree that maintains a balance between the size of its left and right subtrees. Unlike binary search tree that sort nodes based on their key values, ABT maintains the insertion order of elements. ABT not only has the ability of random access but also has the ability of dynamic editing. The time complexity of its random access, insertion, and deletion operations is O(log n).
 
 ## Applicability
 
-Array and list are two common data structures. Array allow random access to elements in O(1) time, while list allow insertion and deletion of elements in O(1) time. However, sometimes we need a data structure that combines the advantages of both array and list. As a result, the concept of an Array Based on Tree was invented. It provides good performance for random access, insertion, and deletion operations.
+Array and list are two common data structures. Array allow random access to elements in O(1) time, while list allow insertion and deletion of elements in O(1) time. However, sometimes we need a data structure that combines the advantages of both array and list. As a result, the concept of an Array Based on Tree was invented. ABT balances the performance of random access, insertion, and deletion operations well, making it suitable for application scenarios that require both random access and dynamic editing.
 
 ## Example
 
@@ -186,13 +186,11 @@ struct ab_tree_node
 
 ### Rotations
 
-Like other self-balancing binary search trees, rotation operations are necessary to restore balance when inserting or deleting nodes causes the Size-Balanced Tree to become unbalanced.
-
-Common rotation operations include left rotation and right rotation, which can be achieved by exchanging the position of nodes and subtrees. The following describes the operation process of left and right rotation.
+Like other self-balancing binary search trees, rotation operations are necessary to restore balance when inserting or deleting nodes causes the Size-Balanced Tree to become unbalanced. Common rotation operations include left rotation and right rotation, which can be achieved by exchanging the position of nodes and subtrees. The following describes the operation process of left and right rotation.
 
 #### Left rotation
 
-The left rotation operation is used to make the right subtree of a node its parent node, and to make the left subtree of its right subtree its right subtree. This operation makes the original node the left child node of its right child node, thereby maintaining the balance of the binary balancing tree.
+Left rotation is used to make the right child node R of node T become its parent node and make the left child node A of its right child node R become its right child node. This operation makes the original node T become the left child node of its right child node R, thereby maintaining the balance of the binary tree.
 
 ```
        T                       R
@@ -227,7 +225,7 @@ node_pointer left_rotate(node_pointer t)
 
 #### Right rotation
 
-The right rotation operation is similar to the left rotation operation, but in the opposite direction. The right rotation operation is used to make the left subtree of a node its parent node, and to make the right subtree of its left subtree its left subtree. This operation makes the original node the right child node of its left child node, thereby maintaining the balance of the binary balancing tree.
+Right rotation is similar to left rotation but in the opposite direction. Right rotation is used to make the left child node L of node T become its parent node and make the right child node B of its left child node L become its left child node. This operation makes the original node T become the right child node of its left child node L, thereby maintaining the balance of the binary tree.
 
 ```
        T                       L

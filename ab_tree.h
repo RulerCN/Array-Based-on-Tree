@@ -42,7 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif // !DEFAULT_ALLOCATOR
 
 using ab_tree_node_state = signed char;
-
 static constexpr ab_tree_node_state ab_tree_state_root    =  0x00;
 static constexpr ab_tree_node_state ab_tree_state_parent  = -0x0F;
 static constexpr ab_tree_node_state ab_tree_state_left    =  0x12;
@@ -125,49 +124,49 @@ public:
 		: node(other.get_pointer())
 	{}
 
-	ab_tree_iterator<Tree, IsConst>& operator=(const ab_tree_iterator<Tree, IsConst>& other) noexcept
+	inline ab_tree_iterator<Tree, IsConst>& operator=(const ab_tree_iterator<Tree, IsConst>& other) noexcept
 	{
 		if (this != &other)
 			node = other.get_pointer();
 		return *this;
 	}
 
-	operator ab_tree_iterator<Tree, true>(void) const noexcept
+	inline operator ab_tree_iterator<Tree, true>(void) const noexcept
 	{
 		return ab_tree_iterator<Tree, true>(node);
 	}
 
 	// ab_tree_iterator operations:
 
-	node_pointer get_parent(void) noexcept
+	inline node_pointer get_parent(void) noexcept
 	{
 		return node->parent;
 	}
-	const node_pointer get_parent(void) const noexcept
+	inline const node_pointer get_parent(void) const noexcept
 	{
 		return node->parent;
 	}
 
-	node_pointer get_pointer(void) noexcept
+	inline node_pointer get_pointer(void) noexcept
 	{
 		return node;
 	}
-	const node_pointer get_pointer(void) const noexcept
+	inline const node_pointer get_pointer(void) const noexcept
 	{
 		return node;
 	}
 
-	size_type get_size(void) const noexcept
+	inline size_type get_size(void) const noexcept
 	{
 		return node->size;
 	}
 
-	reference operator*(void) const noexcept
+	inline reference operator*(void) const noexcept
 	{
 		return node->data;
 	}
 
-	pointer operator->(void) const noexcept
+	inline pointer operator->(void) const noexcept
 	{
 		return &(operator*());
 	}
@@ -220,14 +219,14 @@ public:
 		return *this;
 	}
 
-	ab_tree_iterator<Tree, IsConst> operator++(int) noexcept
+	inline ab_tree_iterator<Tree, IsConst> operator++(int) noexcept
 	{
 		iterator_type itr(*this);
 		this->operator++();
 		return itr;
 	}
 
-	ab_tree_iterator<Tree, IsConst> operator--(int) noexcept
+	inline ab_tree_iterator<Tree, IsConst> operator--(int) noexcept
 	{
 		iterator_type itr(*this);
 		this->operator--();
@@ -237,13 +236,13 @@ public:
 	// relational operators:
 
 	template <bool is_const>
-	bool operator==(const ab_tree_iterator<Tree, is_const>& rhs) const noexcept
+	inline bool operator==(const ab_tree_iterator<Tree, is_const>& rhs) const noexcept
 	{
 		return node == rhs.get_pointer();
 	}
 
 	template <bool is_const>
-	bool operator!=(const ab_tree_iterator<Tree, is_const>& rhs) const noexcept
+	inline bool operator!=(const ab_tree_iterator<Tree, is_const>& rhs) const noexcept
 	{
 		return node != rhs.get_pointer();
 	}
@@ -286,7 +285,7 @@ public:
 		, state(other.get_state())
 	{}
 
-	ab_tree_primitive_iterator<Tree, IsConst>& operator=(const ab_tree_primitive_iterator<Tree, IsConst>& other) noexcept
+	inline ab_tree_primitive_iterator<Tree, IsConst>& operator=(const ab_tree_primitive_iterator<Tree, IsConst>& other) noexcept
 	{
 		if (this != &other)
 		{
@@ -296,52 +295,52 @@ public:
 		return *this;
 	}
 
-	operator ab_tree_primitive_iterator<Tree, true>(void) const noexcept
+	inline operator ab_tree_primitive_iterator<Tree, true>(void) const noexcept
 	{
 		return ab_tree_primitive_iterator<Tree, true>(node);
 	}
 
 	// ab_tree_primitive_iterator operations:
 
-	node_pointer get_parent(void) noexcept
+	inline node_pointer get_parent(void) noexcept
 	{
 		return node->parent;
 	}
-	const node_pointer get_parent(void) const noexcept
+	inline const node_pointer get_parent(void) const noexcept
 	{
 		return node->parent;
 	}
 
-	node_pointer get_pointer(void) noexcept
+	inline node_pointer get_pointer(void) noexcept
 	{
 		return node;
 	}
-	const node_pointer get_pointer(void) const noexcept
+	inline const node_pointer get_pointer(void) const noexcept
 	{
 		return node;
 	}
 
-	ab_tree_node_state get_state(void) const noexcept
+	inline ab_tree_node_state get_state(void) const noexcept
 	{
 		return state;
 	}
 
-	intptr_t get_depth(void) const noexcept
+	inline intptr_t get_depth(void) const noexcept
 	{
 		return static_cast<intptr_t>(state >> 4);
 	}
 
-	size_type get_size(void) const noexcept
+	inline size_type get_size(void) const noexcept
 	{
 		return node->size;
 	}
 
-	reference operator*(void) const noexcept
+	inline reference operator*(void) const noexcept
 	{
 		return node->data;
 	}
 
-	pointer operator->(void) const noexcept
+	inline pointer operator->(void) const noexcept
 	{
 		return &(operator*());
 	}
@@ -400,14 +399,14 @@ public:
 		return *this;
 	}
 
-	ab_tree_primitive_iterator<Tree, IsConst> operator++(int) noexcept
+	inline ab_tree_primitive_iterator<Tree, IsConst> operator++(int) noexcept
 	{
 		iterator_type itr(*this);
 		this->operator++();
 		return itr;
 	}
 
-	ab_tree_primitive_iterator<Tree, IsConst> operator--(int) noexcept
+	inline ab_tree_primitive_iterator<Tree, IsConst> operator--(int) noexcept
 	{
 		iterator_type itr(*this);
 		this->operator--();
@@ -417,13 +416,13 @@ public:
 	// relational operators:
 
 	template <bool is_const>
-	bool operator==(const ab_tree_primitive_iterator<Tree, is_const>& rhs) const noexcept
+	inline bool operator==(const ab_tree_primitive_iterator<Tree, is_const>& rhs) const noexcept
 	{
 		return node == rhs.get_pointer();
 	}
 
 	template <bool is_const>
-	bool operator!=(const ab_tree_primitive_iterator<Tree, is_const>& rhs) const noexcept
+	inline bool operator!=(const ab_tree_primitive_iterator<Tree, is_const>& rhs) const noexcept
 	{
 		return node != rhs.get_pointer();
 	}
@@ -436,16 +435,17 @@ private:
 
 // Class template ab_tree_node_allocator
 template <class T, class Allocator>
-class ab_tree_node_allocator : public Allocator
+class ab_tree_node_allocator
 {
 public:
 	// types:
 
-	using allocator_type       = Allocator;
-	using traits_type          = typename std::allocator_traits<allocator_type>;
+	using tree_traits_type     = std::allocator_traits<Allocator>;
 	using tree_node_type       = typename ab_tree_node<T>::node_type;
-	using node_allocator_type  = typename traits_type::template rebind_alloc<tree_node_type>;
-	using node_traits_type     = typename traits_type::template rebind_traits<tree_node_type>;
+	using allocator_type       = typename tree_traits_type::template rebind_alloc<T>;
+	using traits_type          = typename tree_traits_type::template rebind_traits<T>;
+	using node_allocator_type  = typename tree_traits_type::template rebind_alloc<tree_node_type>;
+	using node_traits_type     = typename tree_traits_type::template rebind_traits<tree_node_type>;
 	using node_type            = typename node_traits_type::value_type;
 	using node_pointer         = typename node_traits_type::pointer;
 	using node_size_type       = typename node_traits_type::size_type;
@@ -454,46 +454,52 @@ public:
 	// construct/copy/destroy:
 
 	ab_tree_node_allocator(void)
-		: Allocator()
+		: allocator()
 	{}
 	explicit ab_tree_node_allocator(const Allocator& alloc)
-		: Allocator(alloc)
+		: allocator(alloc)
 	{}
 	explicit ab_tree_node_allocator(Allocator&& alloc)
-		: Allocator(std::forward<Allocator>(alloc))
+		: allocator(std::forward<Allocator>(alloc))
 	{}
+
 	~ab_tree_node_allocator(void)
 	{}
 
 	// ab_tree_node_allocator operations:
 
-	allocator_type get_allocator(void) const noexcept
+	inline allocator_type get_allocator(void) noexcept
 	{
-		return *static_cast<const allocator_type*>(this);
+		return allocator;
+	}
+	inline const allocator_type get_allocator(void) const noexcept
+	{
+		return allocator;
 	}
 
-	node_size_type max_size(void) const noexcept
+	inline node_size_type max_size(void) const noexcept
 	{
 		return node_alloc.max_size();
 	}
 
 protected:
 
-	template<class ...Args>
-	node_pointer create_node(Args&&... args)
+	template <class ...Args>
+	inline node_pointer create_node(Args&&... args)
 	{
-		node_pointer p = node_alloc.allocate(1);
-		get_allocator().construct(std::addressof(p->data), std::forward<Args>(args)...);
+		node_pointer p = node_traits_type::allocate(node_alloc, 1);
+		traits_type::construct(allocator, std::addressof(p->data), std::forward<Args>(args)...);
 		return p;
 	}
 
-	void destroy_node(const node_pointer p)
+	inline void destroy_node(const node_pointer p)
 	{
-		get_allocator().destroy(std::addressof(p->data));
-		node_alloc.deallocate(p, 1);
+		traits_type::destroy(allocator, std::addressof(p->data));
+		node_traits_type::deallocate(node_alloc, p, 1);
 	}
 
 private:
+	allocator_type      allocator;
 	node_allocator_type node_alloc;
 };
 
@@ -506,10 +512,13 @@ public:
 	// types:
 
 	using tree_type                        = ab_tree<T, Allocator>;
-	using allocator_type                   = Allocator;
-	using traits_type                      = std::allocator_traits<allocator_type>;
-	using node_allocator_type              = ab_tree_node_allocator<T, Allocator>;
-	using node_traits_type                 = std::allocator_traits<node_allocator_type>;
+	using tree_traits_type                 = std::allocator_traits<Allocator>;
+	using node_type                        = typename ab_tree_node<T>::node_type;
+	using node_pointer                     = typename node_type*;
+	using const_node_pointer               = typename const node_type*;
+	using node_allocator_type              = typename tree_traits_type::template rebind_alloc<node_type>;
+	using allocator_type                   = typename tree_traits_type::template rebind_alloc<T>;
+	using traits_type                      = typename tree_traits_type::template rebind_traits<T>;
 	using value_type                       = typename traits_type::value_type;
 	using reference                        = value_type&;
 	using const_reference                  = const value_type&;
@@ -517,8 +526,6 @@ public:
 	using const_pointer                    = typename traits_type::const_pointer;
 	using size_type                        = typename traits_type::size_type;
 	using difference_type                  = typename traits_type::difference_type;
-	using node_type                        = typename node_allocator_type::node_type;
-	using node_pointer                     = typename node_allocator_type::node_pointer;
 
 	using iterator                         = ab_tree_iterator<tree_type, false>;
 	using const_iterator                   = ab_tree_iterator<tree_type, true>;
@@ -532,13 +539,13 @@ public:
 	// construct/copy/destroy:
 
 	explicit ab_tree(const Allocator& alloc = Allocator())
-		: node_allocator_type(alloc)
+		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
 	}
 	ab_tree(const ab_tree<T, Allocator>& other)
-		: node_allocator_type(other.get_allocator())
+		: ab_tree_node_allocator<T, Allocator>(other.get_allocator())
 		, header(nullptr)
 	{
 		create_header();
@@ -546,7 +553,7 @@ public:
 			copy_node(other.header->parent);
 	}
 	ab_tree(const ab_tree<T, Allocator>& other, const Allocator& alloc)
-		: node_allocator_type(alloc)
+		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
@@ -554,21 +561,21 @@ public:
 			copy_node(other.header->parent);
 	}
 	ab_tree(ab_tree<T, Allocator>&& other) noexcept
-		: node_allocator_type(other.get_allocator())
+		: ab_tree_node_allocator<T, Allocator>(other.get_allocator())
 		, header(nullptr)
 	{
 		create_header();
 		swap(other);
 	}
 	ab_tree(ab_tree<T, Allocator>&& other, const Allocator& alloc) noexcept
-		: node_allocator_type(alloc)
+		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
 		swap(other);
 	}
-	ab_tree(std::initializer_list<T> ilist, const Allocator& alloc = Allocator())
-		: node_allocator_type(alloc)
+	explicit ab_tree(std::initializer_list<T> ilist, const Allocator& alloc = Allocator())
+		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
@@ -581,7 +588,7 @@ public:
 		destroy_header();
 	}
 
-	ab_tree<T, Allocator>& operator=(const ab_tree<T, Allocator>& other)
+	inline tree_type& operator=(const tree_type& other)
 	{
 		if (this != &other)
 		{
@@ -591,155 +598,154 @@ public:
 		}
 		return *this;
 	}
-	ab_tree<T, Allocator>& operator=(ab_tree<T, Allocator>&& other)
+	inline tree_type& operator=(tree_type&& other) noexcept
 	{
 		if (this != &other)
 			swap(other);
 		return *this;
 	}
 
-	void assign(const_iterator first, const_iterator last)
-	{
-		clear();
-		insert(end(), first, last);
-	}
-	void assign(size_type n, const value_type& value)
+	inline void assign(size_type n, const_reference value)
 	{
 		clear();
 		insert(end(), n, value);
 	}
-	void assign(std::initializer_list<value_type> ilist)
+	inline void assign(const_iterator first, const_iterator last)
 	{
 		clear();
-		insert(end(), ilist.begin(), ilist.end());
+		insert(end(), first, last);
+	}
+	inline void assign(std::initializer_list<value_type> ilist)
+	{
+		assign(ilist);
 	}
 
 	// iterators:
 
-	iterator begin(void) noexcept
+	inline iterator begin(void) noexcept
 	{
 		return iterator(header->left);
 	}
-	const_iterator begin(void) const noexcept
+	inline const_iterator begin(void) const noexcept
 	{
 		return const_iterator(header->left);
 	}
-	const_iterator cbegin(void) const noexcept
+	inline const_iterator cbegin(void) const noexcept
 	{
 		return const_iterator(header->left);
 	}
-	iterator end(void) noexcept
+	inline iterator end(void) noexcept
 	{
 		return iterator(header);
 	}
-	const_iterator end(void) const noexcept
+	inline const_iterator end(void) const noexcept
 	{
 		return const_iterator(header);
 	}
-	const_iterator cend(void) const noexcept
+	inline const_iterator cend(void) const noexcept
 	{
 		return const_iterator(header);
 	}
 
-	reverse_iterator rbegin(void) noexcept
+	inline reverse_iterator rbegin(void) noexcept
 	{
 		return reverse_iterator(end());
 	}
-	const_reverse_iterator rbegin(void) const noexcept
+	inline const_reverse_iterator rbegin(void) const noexcept
 	{
 		return const_reverse_iterator(end());
 	}
-	const_reverse_iterator crbegin(void) const noexcept
+	inline const_reverse_iterator crbegin(void) const noexcept
 	{
 		return const_reverse_iterator(cend());
 	}
-	reverse_iterator rend(void) noexcept
+	inline reverse_iterator rend(void) noexcept
 	{
 		return reverse_iterator(begin());
 	}
-	const_reverse_iterator rend(void) const noexcept
+	inline const_reverse_iterator rend(void) const noexcept
 	{
 		return const_reverse_iterator(begin());
 	}
-	const_reverse_iterator crend(void) const noexcept
+	inline const_reverse_iterator crend(void) const noexcept
 	{
 		return const_reverse_iterator(cbegin());
 	}
 
-	primitive_iterator pbegin(void) noexcept
+	inline primitive_iterator pbegin(void) noexcept
 	{
 		return primitive_iterator(root());
 	}
-	const_primitive_iterator pbegin(void) const noexcept
+	inline const_primitive_iterator pbegin(void) const noexcept
 	{
 		return const_primitive_iterator(root());
 	}
-	const_primitive_iterator cpbegin(void) const noexcept
+	inline const_primitive_iterator cpbegin(void) const noexcept
 	{
 		return const_primitive_iterator(root());
 	}
-	primitive_iterator pend(void) noexcept
+	inline primitive_iterator pend(void) noexcept
 	{
 		return primitive_iterator(header);
 	}
-	const_primitive_iterator pend(void) const noexcept
+	inline const_primitive_iterator pend(void) const noexcept
 	{
 		return const_primitive_iterator(header);
 	}
-	const_primitive_iterator cpend(void) const noexcept
+	inline const_primitive_iterator cpend(void) const noexcept
 	{
 		return const_primitive_iterator(header);
 	}
 
-	reverse_primitive_iterator rpbegin(void) noexcept
+	inline reverse_primitive_iterator rpbegin(void) noexcept
 	{
 		return reverse_primitive_iterator(pend());
 	}
-	const_reverse_primitive_iterator rpbegin(void) const noexcept
+	inline const_reverse_primitive_iterator rpbegin(void) const noexcept
 	{
 		return const_reverse_primitive_iterator(pend());
 	}
-	const_reverse_primitive_iterator crpbegin(void) const noexcept
+	inline const_reverse_primitive_iterator crpbegin(void) const noexcept
 	{
 		return const_reverse_primitive_iterator(cpend());
 	}
-	reverse_primitive_iterator rpend(void) noexcept
+	inline reverse_primitive_iterator rpend(void) noexcept
 	{
 		return reverse_primitive_iterator(pbegin());
 	}
-	const_reverse_primitive_iterator rpend(void) const noexcept
+	inline const_reverse_primitive_iterator rpend(void) const noexcept
 	{
 		return const_reverse_primitive_iterator(pbegin());
 	}
-	const_reverse_primitive_iterator crpend(void) const noexcept
+	inline const_reverse_primitive_iterator crpend(void) const noexcept
 	{
 		return const_reverse_primitive_iterator(cpbegin());
 	}
 
 	// capacity:
 
-	bool empty(void) const noexcept
+	inline bool empty(void) const noexcept
 	{
 		return !header->parent;
 	}
 
-	size_type size(void) const noexcept
+	inline size_type size(void) const noexcept
 	{
 		return header->parent ? header->parent->size : 0;
 	}
 
 	// element access:
 
-	reference operator[](size_type pos) noexcept
+	inline reference operator[](size_type pos) noexcept
 	{
 		return select_node(pos)->data;
 	}
-	const_reference operator[](size_type pos) const noexcept
+	inline const_reference operator[](size_type pos) const noexcept
 	{
 		return select_node(pos)->data;
 	}
 
-	reference at(size_type pos)
+	inline reference at(size_type pos)
 	{
 		if (empty())
 			throw std::domain_error(ABT_NOT_INITIALIZED);
@@ -747,7 +753,7 @@ public:
 			throw std::out_of_range(ABT_OUT_OF_RANGE);
 		return select_node(pos)->data;
 	}
-	const_reference at(size_type pos) const
+	inline const_reference at(size_type pos) const
 	{
 		if (empty())
 			throw std::domain_error(ABT_NOT_INITIALIZED);
@@ -756,20 +762,20 @@ public:
 		return select_node(pos)->data;
 	}
 
-	reference front(void)
+	inline reference front(void)
 	{
 		return *begin();
 	}
-	const_reference front(void) const
+	inline const_reference front(void) const
 	{
 		return *begin();
 	}
 
-	reference back(void)
+	inline reference back(void)
 	{
 		return *rbegin();
 	}
-	const_reference back(void) const
+	inline const_reference back(void) const
 	{
 		return *rbegin();
 	}
@@ -777,62 +783,62 @@ public:
 	// modifiers:
 
 	template <class... Args>
-	void emplace_front(Args&&... args)
+	inline void emplace_front(Args&&... args)
 	{
 		insert_node(header->left, std::forward<Args>(args)...);
 	}
 
 	template <class... Args>
-	void emplace_back(Args&&... args)
+	inline void emplace_back(Args&&... args)
 	{
 		insert_node(header, std::forward<Args>(args)...);
 	}
 
 	template <class... Args>
-	iterator emplace(const_iterator pos, Args&&... args)
+	inline iterator emplace(const_iterator pos, Args&&... args)
 	{
 		return iterator(insert_node(pos.get_pointer(), std::forward<Args>(args)...));
 	}
 
-	void push_front(const value_type& value)
+	inline void push_front(const_reference value)
 	{
 		insert_node(header->left, value);
 	}
-	void push_front(value_type&& value)
+	inline void push_front(value_type&& value)
 	{
 		insert_node(header->left, std::forward<value_type>(value));
 	}
 
-	void push_back(const value_type& value)
+	inline void push_back(const_reference value)
 	{
 		insert_node(header, value);
 	}
-	void push_back(value_type&& value)
+	inline void push_back(value_type&& value)
 	{
 		insert_node(header, std::forward<value_type>(value));
 	}
 
-	void pop_front(void)
+	inline void pop_front(void)
 	{
 		if (header->parent)
 			erase_node(header->left);
 	}
 
-	void pop_back(void)
+	inline void pop_back(void)
 	{
 		if (header->parent)
 			erase_node(header->right);
 	}
 
-	iterator insert(const_iterator pos, const value_type& value)
+	inline iterator insert(const_iterator pos, const_reference value)
 	{
 		return iterator(insert_node(pos.get_pointer(), value));
 	}
-	iterator insert(const_iterator pos, value_type&& value)
+	inline iterator insert(const_iterator pos, value_type&& value)
 	{
 		return iterator(insert_node(pos.get_pointer(), std::forward<value_type>(value)));
 	}
-	iterator insert(const_iterator pos, size_type n, const value_type& value)
+	inline iterator insert(const_iterator pos, size_type n, const_reference value)
 	{
 		node_pointer t;
 		if (n == 0)
@@ -846,7 +852,7 @@ public:
 		return iterator(t);
 	}
 	template <class InputIt>
-	iterator insert(const_iterator pos, InputIt first, InputIt last)
+	inline iterator insert(const_iterator pos, InputIt first, InputIt last)
 	{
 		node_pointer t;
 		if (first == last)
@@ -859,12 +865,12 @@ public:
 		}
 		return iterator(t);
 	}
-	iterator insert(const_iterator pos, std::initializer_list<value_type> ilist)
+	inline iterator insert(const_iterator pos, std::initializer_list<value_type> ilist)
 	{
 		return insert(pos, ilist.begin(), ilist.end());
 	}
 
-	iterator erase(const_iterator pos)
+	inline iterator erase(const_iterator pos)
 	{
 		iterator next = iterator(pos.get_pointer());
 		if (pos != cend())
@@ -874,7 +880,7 @@ public:
 		}
 		return next;
 	}
-	iterator erase(const_iterator first, const_iterator last)
+	inline iterator erase(const_iterator first, const_iterator last)
 	{
 		iterator next = iterator(last.get_pointer());
 		if (first == cbegin() && last == cend())
@@ -885,13 +891,13 @@ public:
 		return next;
 	}
 
-	void swap(ab_tree<T, Allocator>& rhs) noexcept
+	inline void swap(tree_type& other) noexcept
 	{
-		if (this != &rhs)
-			std::swap(header, rhs.header);
+		if (this != &other)
+			std::swap(header, other.header);
 	}
 
-	void clear(void)
+	inline void clear(void)
 	{
 		if (header->parent)
 		{
@@ -904,37 +910,37 @@ public:
 
 	// operations:
 
-	iterator select(size_type idx) noexcept
+	inline iterator select(size_type pos) noexcept
 	{
-		return iterator(select_node(idx));
+		return iterator(select_node(pos));
 	}
-	const_iterator select(size_type idx) const noexcept
+	inline const_iterator select(size_type pos) const noexcept
 	{
-		return const_iterator(select_node(idx));
+		return const_iterator(select_node(pos));
 	}
 
 private:
 
-	node_pointer root(void) const noexcept
+	inline node_pointer root(void) const noexcept
 	{
 		return header->parent ? header->parent : header;
 	}
 
-	node_pointer leftmost(node_pointer t) const noexcept
+	inline node_pointer leftmost(node_pointer t) const noexcept
 	{
 		while (t->left)
 			t = t->left;
 		return t;
 	}
 
-	node_pointer rightmost(node_pointer t) const noexcept
+	inline node_pointer rightmost(node_pointer t) const noexcept
 	{
 		while (t->right)
 			t = t->right;
 		return t;
 	}
 
-	void create_header(void)
+	inline void create_header(void)
 	{
 		if (!header)
 		{
@@ -946,7 +952,7 @@ private:
 		}
 	}
 
-	void destroy_header(void)
+	inline void destroy_header(void)
 	{
 		if (header)
 		{
