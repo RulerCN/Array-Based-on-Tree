@@ -1,10 +1,10 @@
 # Array Based on Tree
 
-An Array Based on Tree (ABT) is a data structure that represents an array in the form of a self-balancing binary tree that maintains a balance between the size of its left and right subtrees. Unlike binary search tree that sort nodes based on their key values, ABT maintains the insertion order of elements. ABT not only has the ability of random access but also has the ability of dynamic editing. The time complexity of its random access, insertion, and deletion operations is O(log n).
+​	An Array Based on Tree (ABT) is a data structure that represents an array in the form of a self-balancing binary tree that maintains a balance between the size of its left and right subtrees. Unlike binary search tree that sort nodes based on their key values, ABT maintains the insertion order of elements. ABT not only has the ability of random access but also has the ability of dynamic editing. The time complexity of its random access, insertion, and deletion operations is O(log n).
 
 ## Applicability
 
-Array and list are two common data structures. Array allow random access to elements in O(1) time, while list allow insertion and deletion of elements in O(1) time. However, sometimes we need a data structure that combines the advantages of both array and list. As a result, the concept of an Array Based on Tree was invented. ABT balances the performance of random access, insertion, and deletion operations well, making it suitable for application scenarios that require both random access and dynamic editing.
+​	Array and list are two common data structures. Array allow random access to elements in O(1) time, while list allow insertion and deletion of elements in O(1) time. However, sometimes we need a data structure that combines the advantages of both array and list. As a result, the concept of an Array Based on Tree was invented. ABT balances the performance of random access, insertion, and deletion operations well, making it suitable for application scenarios that require both random access and dynamic editing.
 
 ## Example
 
@@ -16,17 +16,18 @@ int main(void)
 {
     // Creates an array containing integers.
     ab_tree<int> arr({ 7, 1, 8, 0 });
+
     // Prints all elements of an array.
     std::cout << "array = { ";
     for (auto itr = arr.cbegin(); itr != arr.cend(); ++itr)
         std::cout << *itr << ", ";
     std::cout << "}; \n";
 
+    // Subscript operation.
     arr[1] = -1;
-    // Selects the third element.
-    auto itr = arr.select(2);
+
     // Inserts tow elements.
-    arr.insert(itr, { 10, 16 });
+    arr.insert(2, { 10, 16 });
 
     // Prints all elements of an array.
     std::cout << "array = { ";
@@ -38,7 +39,7 @@ int main(void)
 }
 ```
 
-Output:
+​	Output:
 
 ```C++
 array = { 7, 1, 8, 0, };
@@ -47,11 +48,11 @@ array = { 7, -1, 10, 16, 8, 0, };
 
 ## Interface
 
-This is a header-only library designed for modern C++. Its interface is similar to that of the list and vector containers in the C++ standard library. Therefore, it can be used easily with almost no learning cost.
+​	This is a header-only library designed for modern C++. Its interface is similar to that of the list and vector containers in the C++ standard library. Therefore, it can be used easily with almost no learning cost.
 
 ### ab_tree
 
-Defined in header <ab_tree.h>.
+​	Defined in header <ab_tree.h>.
 
 ```C++
 template <class T, class Allocator = std::allocator<T>>
@@ -92,8 +93,8 @@ class ab_tree;
 
 | function   | description                                                  |
 | ---------- | ------------------------------------------------------------ |
-| at         | access specified element with bounds checking<br />*(public member function)* |
 | operator[] | access specified element<br />*(public member function)*     |
+| at         | access specified element with bounds checking<br />*(public member function)* |
 | front      | access the first element<br />*(public member function)*     |
 | back       | access the last element<br />*(public member function)*      |
 
@@ -122,7 +123,6 @@ class ab_tree;
 
 | function      | description                                                  |
 | ------------- | ------------------------------------------------------------ |
-| clear         | clears the contents<br />*(public member function)*          |
 | emplace_front | constructs an element in-place at the beginning<br />*(public member function)* |
 | emplace_back  | constructs an element in-place at the end<br />*(public member function)* |
 | emplace       | constructs element in-place<br />*(public member function)*  |
@@ -133,6 +133,7 @@ class ab_tree;
 | insert        | inserts elements<br />*(public member function)*             |
 | erase         | erases elements<br />*(public member function)*              |
 | swap          | swaps the contents<br />*(public member function)*           |
+| clear         | clears the contents<br />*(public member function)*          |
 
 ##### Operations
 
@@ -144,31 +145,32 @@ class ab_tree;
 
 ### Properties
 
-An Array Based on Tree is a data structure based on a non-sorted binary tree and has the following properties:
+​	An Array Based on Tree is a data structure based on a non-sorted binary tree and has the following properties:
 
 - The size of the left child node is not less than the sizes of its two nephew nodes.
 - The size of the right child node is not less than the sizes of its two nephew nodes.
 - Both left and right subtrees are ABTs.
 
-Consider the following example where T is the node of ABT, L and R are its child nodes, A, B, C, and D are subtrees that also satisfy the above properties of ABT.
+​	Consider the following example where T is the node of ABT, L and R are its child nodes, A, B, C, and D are subtrees that also satisfy the above properties of ABT.
 
 ```
-       T
-     /   \
-    L     R
-  /  \   /  \
- A    B C    D
+      T
+     / \
+    /   \
+   L     R
+  / \   / \
+ A   B C   D
 ```
 
-According to the properties of ABT, the node T must satisfy:
+​	According to the properties of ABT, the node T must satisfy:
 
 - size(L) >= max(size\(C\), size(D))
 - size\(R\) >= max(size(A), size(B))
 
 ### Node
 
-The node of ABT include a parent node, two child nodes, and the size of nodes in the subtree where the node is located.
-The C++code for node definition is as follows:
+​	The node of ABT include a parent node, two child nodes, and the size of nodes in the subtree where the node is located.
+​	The C++code for node definition is as follows:
 
 ```c++
 template <class T>
@@ -186,21 +188,23 @@ struct ab_tree_node
 
 ### Rotations
 
-Like other self-balancing binary search trees, rotation operations are necessary to restore balance when inserting or deleting nodes causes the Size-Balanced Tree to become unbalanced. Common rotation operations include left rotation and right rotation, which can be achieved by exchanging the position of nodes and subtrees. The following describes the operation process of left and right rotation.
+​	Like other self-balancing binary search trees, rotation operations are necessary to restore balance when inserting or deleting nodes causes the Size-Balanced Tree to become unbalanced.
+
+​	Common rotation operations include left rotation and right rotation, which can be achieved by exchanging the position of nodes and subtrees. The following describes the operation process of left and right rotation.
 
 #### Left rotation
 
-Left rotation is used to make the right child node R of node T become its parent node and make the left child node A of its right child node R become its right child node. This operation makes the original node T become the left child node of its right child node R, thereby maintaining the balance of the binary tree.
+​	The left rotation is used to make the right child node R of node T become its parent node and make the left child node A of its right child node R become its right child node. This operation makes the original node T become the left child node of its right child node R, thereby maintaining the balance of the binary tree.
 
 ```
-       T                       R
-     /   \                   /   \
-    L     R       -->       T     B
-         /  \             /  \
-        A    B           L    A
+      T                   R
+     / \                 / \
+    L   R       -->     T   B
+       / \             / \
+      A   B           L   A
 ```
 
-The C++ code for left rotation is as follows:
+​	The C++ code for left rotation is as follows:
 ```C++
 node_pointer left_rotate(node_pointer t)
 {
@@ -225,16 +229,16 @@ node_pointer left_rotate(node_pointer t)
 
 #### Right rotation
 
-Right rotation is similar to left rotation but in the opposite direction. Right rotation is used to make the left child node L of node T become its parent node and make the right child node B of its left child node L become its left child node. This operation makes the original node T become the right child node of its left child node L, thereby maintaining the balance of the binary tree.
+​	The right rotation is similar to the left rotation but in the opposite direction. The right rotation is used to make the left child node L of node T become its parent node and make the right child node B of its left child node L become its left child node. This operation makes the original node T become the right child node of its left child node L, thereby maintaining the balance of the binary tree.
 
 ```
-       T                       L
-     /   \                   /   \
-    L     R       -->       A     T
-  /  \                           /  \
- A    B                         B    R
+     T                     L
+    / \                   / \
+   L   R       -->       A   T
+  / \                       / \
+ A   B                     B   R
 ```
-The C++ code for right rotation is as follows:
+​	The C++ code for right rotation is as follows:
 ```C++
 node_pointer right_rotate(node_pointer t)
 {
@@ -259,9 +263,12 @@ node_pointer right_rotate(node_pointer t)
 
 ### Rebalancing
 
-After insertion or deletion in ABT, the properties of ABT may be violated, and it is necessary to rebalance the ABT rooted at node T. The prerequisite is that the child nodes of T are already ABTs themselves. There are four cases to consider when rebalancing:
+​	After insertion or deletion in ABT, the properties of ABT may be violated, and it is necessary to rebalance the ABT rooted at node T. The prerequisite is that the child nodes of T are already ABTs themselves. There are four cases to consider when rebalancing:
 
-1. When size(T.left) < size(T.right.left), it may occur when inserting a node into the right child of T or deleting a node from the left child of T. First, perform a right rotation on the right child node of T, and then perform a left rotation on T. Now, the subtrees A, B, D, E, F, and L still satisfy the properties of ABT, while the left subtree T and the right subtree R may violate the properties of ABT. For the left subtree T, due to the decrease in nodes of its right subtree, it may occur that size(T.right) < size(T.left.child), which requires rebalancing. For the right subtree R, due to the decrease in nodes of its left subtree, it may occur that size(R.left) < size(R.right.child), which requires rebalancing. Finally, the ancestor nodes of the node C should be rebalanced one by one until the root node is reached.
+1. size(T.left) < size(T.right.left)
+
+​	It may occur when inserting a node into the right child of T or deleting a node from the left child of T. First, perform a right rotation on the right child node of T, and then perform a left rotation on T. Now, the subtrees A, B, D, E, F, and L still satisfy the properties of ABT, while the left subtree T and the right subtree R may violate the properties of ABT. For the left subtree T, due to the decrease in nodes of its right subtree, it may occur that size(T.right) < size(T.left.child), which requires rebalancing. For the right subtree R, due to the decrease in nodes of its left subtree, it may occur that size(R.left) < size(R.right.child), which requires rebalancing. Finally, rebalance node C and its ancestor nodes one by one until reaching the root node.
+
 ```
          T                  T                  C
         / \                / \                / \
@@ -273,7 +280,10 @@ After insertion or deletion in ABT, the properties of ABT may be violated, and i
         E   F                  F   D    A   B
 ```
 
-2. When size(T.left) < size(T.right.right), it may occur when inserting a node into the right child of T or deleting a node from the left child of T. After performing a left rotation on T, the subtree A, B, C, D, E, F, and L still satisfy the properties of ABT. However, due to the decrease in nodes of the right subtree of T, it may occur that size(T.right) < size(T.left.child), which requires rebalancing. Finally, the ancestor nodes of the node R should be rebalanced one by one until the root node is reached.
+2. size(T.left) < size(T.right.right)
+
+​	It may occur when inserting a node into the right child of T or deleting a node from the left child of T. After performing a left rotation on T, the subtree A, B, C, D, E, F, and L still satisfy the properties of ABT. However, due to the decrease in nodes of the right subtree of T, it may occur that size(T.right) < size(T.left.child), which requires rebalancing. Finally, rebalance node R and its ancestor nodes one by one until reaching the root node.
+
 ```
          T                  R
         / \                / \
@@ -284,7 +294,10 @@ After insertion or deletion in ABT, the properties of ABT may be violated, and i
              / \      / \
             E   F    A   B
 ```
-3. When size(T.right) < size(T.left.right), it may occur when inserting a node into the left child of T or deleting a node from the right child of T. First, perform a left rotation on the left child node of T, and then perform a right rotation on T. Now, the subtrees A, C, D, E, F, and R still satisfy the properties of ABT, while the left subtree L and the right subtree T may violate the properties of ABT. For the left subtree L, due to the decrease in nodes of its right subtree, it may occur that size(L.right) < size(L.left.child), which requires rebalancing. For the right subtree T, due to the decrease in nodes of its left subtree, it may occur that size(T.left) < size(T.right.child), which requires rebalancing.  Finally, the ancestor nodes of the node B should be rebalanced one by one until the root node is reached.
+3. size(T.right) < size(T.left.right)
+
+​	It may occur when inserting a node into the left child of T or deleting a node from the right child of T. First, perform a left rotation on the left child node of T, and then perform a right rotation on T. Now, the subtrees A, C, D, E, F, and R still satisfy the properties of ABT, while the left subtree L and the right subtree T may violate the properties of ABT. For the left subtree L, due to the decrease in nodes of its right subtree, it may occur that size(L.right) < size(L.left.child), which requires rebalancing. For the right subtree T, due to the decrease in nodes of its left subtree, it may occur that size(T.left) < size(T.right.child), which requires rebalancing. Finally, rebalance node B and its ancestor nodes one by one until reaching the root node.
+
 ```
          T                  T                  B
         / \                / \                / \
@@ -296,7 +309,10 @@ After insertion or deletion in ABT, the properties of ABT may be violated, and i
       E   F          A   E                        C   D
 ```
 
-4. When size(T.right) < size(T.left.left), it may occur when inserting a node into the left child of T or deleting a node from the right child of T. After performing a right rotation on T, the subtrees A, B, C, D, E, F, and R still satisfy the properties of ABT. However, due to the decrease in nodes of the left subtree of T, it may occur that size(T.left) < size(T.right.child), which requires rebalancing. Finally, the ancestor nodes of the node L should be rebalanced one by one until the root node is reached.
+4. size(T.right) < size(T.left.left)
+
+​	It may occur when inserting a node into the left child of T or deleting a node from the right child of T. After performing a right rotation on T, the subtrees A, B, C, D, E, F, and R still satisfy the properties of ABT. However, due to the decrease in nodes of the left subtree of T, it may occur that size(T.left) < size(T.right.child), which requires rebalancing. Finally, rebalance node L and its ancestor nodes one by one until reaching the root node.
+
 ```
            T                  L
           / \                / \
@@ -307,9 +323,9 @@ After insertion or deletion in ABT, the properties of ABT may be violated, and i
      / \                          / \
     E   F                        C   D
 ```
-The C++ code for rebalancing after inserting a node into the child node of T is as follows:
+​	The C++ code for rebalancing after inserting a node into the child node of T is as follows:
 ```C++
-void insert_rebalance(node_pointer t, bool flag)
+node_pointer insert_rebalance(node_pointer t, bool flag)
 {
 	if (flag)
 	{
@@ -321,14 +337,16 @@ void insert_rebalance(node_pointer t, bool flag)
 			{
 				t->right = right_rotate(t->right);
 				t = left_rotate(t);
-				insert_rebalance(t->left, false);
-				insert_rebalance(t->right, true);
+				t->left = insert_rebalance(t->left, false);
+				t->right = insert_rebalance(t->right, true);
+				t = insert_rebalance(t, true);
 			}
 			// case 2. size(T.left) < size(T.right.right)
 			else if (t->right->right && left_size < t->right->right->size)
 			{
 				t = left_rotate(t);
-				insert_rebalance(t->left, false);
+				t->left = insert_rebalance(t->left, false);
+				t = insert_rebalance(t, true);
 			}
 		}
 	}
@@ -342,47 +360,27 @@ void insert_rebalance(node_pointer t, bool flag)
 			{
 				t->left = left_rotate(t->left);
 				t = right_rotate(t);
-				insert_rebalance(t->left, false);
-				insert_rebalance(t->right, true);
+				t->left = insert_rebalance(t->left, false);
+				t->right = insert_rebalance(t->right, true);
+				t = insert_rebalance(t, false);
 			}
 			// case 4. size(T.right) < size(T.left.left)
 			else if (t->left->left && right_size < t->left->left->size)
 			{
 				t = right_rotate(t);
-				insert_rebalance(t->right, true);
+				t->right = insert_rebalance(t->right, true);
+				t = insert_rebalance(t, false);
 			}
 		}
 	}
-	if (t->parent != header)
-		insert_rebalance(t->parent, t == t->parent->right);
+	return t;
 }
 ```
-The C++ code for rebalancing after deleting a node from the child node of T is as follows:
+​	The C++ code for rebalancing after deleting a node from the child node of T is as follows:
 ```C++
-void erase_rebalance(node_pointer t, bool flag)
+node_pointer erase_rebalance(node_pointer t, bool flag)
 {
-	if (flag)
-	{
-		if (t->left)
-		{
-			size_type right_size = t->right ? t->right->size : 0;
-			// case 3. size(T.right) < size(T.left.right)
-			if (t->left->right && right_size < t->left->right->size)
-			{
-				t->left = left_rotate(t->left);
-				t = right_rotate(t);
-				erase_rebalance(t->left, false);
-				erase_rebalance(t->right, true);
-			}
-			// case 4. size(T.right) < size(T.left.left)
-			else if (t->left->left && right_size < t->left->left->size)
-			{
-				t = right_rotate(t);
-				erase_rebalance(t->right, true);
-			}
-		}
-	}
-	else
+	if (!flag)
 	{
 		if (t->right)
 		{
@@ -392,29 +390,58 @@ void erase_rebalance(node_pointer t, bool flag)
 			{
 				t->right = right_rotate(t->right);
 				t = left_rotate(t);
-				erase_rebalance(t->left, false);
-				erase_rebalance(t->right, true);
+				t->left = erase_rebalance(t->left, true);
+				t->right = erase_rebalance(t->right, false);
+				t = erase_rebalance(t, false);
 			}
 			// case 2. size(T.left) < size(T.right.right)
 			else if (t->right->right && left_size < t->right->right->size)
 			{
 				t = left_rotate(t);
-				erase_rebalance(t->left, false);
+				t->left = erase_rebalance(t->left, true);
+				t = erase_rebalance(t, false);
 			}
 		}
 	}
-	if (t->parent != header)
-		erase_rebalance(t->parent, t == t->parent->right);
+	else
+	{
+		if (t->left)
+		{
+			size_type right_size = t->right ? t->right->size : 0;
+			// case 3. size(T.right) < size(T.left.right)
+			if (t->left->right && right_size < t->left->right->size)
+			{
+				t->left = left_rotate(t->left);
+				t = right_rotate(t);
+				t->left = erase_rebalance(t->left, true);
+				t->right = erase_rebalance(t->right, false);
+				t = erase_rebalance(t, true);
+			}
+			// case 4. size(T.right) < size(T.left.left)
+			else if (t->left->left && right_size < t->left->left->size)
+			{
+				t = right_rotate(t);
+				t->right = erase_rebalance(t->right, false);
+				t = erase_rebalance(t, true);
+			}
+		}
+	}
+	return t;
 }
 ```
 ### Insertion
 
-If the ABT is empty, directly add the node as the root node. Otherwise, it can be divided into the following two cases based on the situation of inserting child nodes of node T:
+​	If the ABT is empty, directly add the node as the root node. Otherwise, it can be divided into the following two cases based on the situation of inserting child nodes of node T:
 
-1. Node T does not have a left child node, and directly insert into the left subtree of node T in this case. The node counts of its ancestor nodes should all be incremented by 1. The above-mentioned case 3 or case 4 may occur, so it is necessary to rebalance node T.
-2. Node T has a left child node, and selects the last node in its left subtree as the actual insertion node X in this case. Insert into the right subtree of node X, and  the node counts of its ancestor nodes should all be incremented by 1. The above-mentioned case 1 or case 2 may occur, so it is necessary to rebalance node X.
+1. Node T does not have a left child node.
 
-The C++ code for the insertion operation is as follows:
+​	In this case, insert the node directly into the left subtree of node T. The node counts of its ancestor nodes should all be incremented by 1. The above-mentioned case 3 or case 4 may occur, so it is necessary to rebalance node T.
+
+2. Node T has a left child node.
+
+​	In this case, select the last node in its left subtree as the actual insertion node X. Insert into the right subtree of node X, and  the node counts of its ancestor nodes should all be incremented by 1. The above-mentioned case 1 or case 2 may occur, so it is necessary to rebalance node X.
+
+​	The C++ code for the insertion operation is as follows:
 
 ```C++
 template<class ...Args>
@@ -446,8 +473,11 @@ node_pointer insert_node(node_pointer t, Args&&... args)
 			// increases the size of nodes
 			for (node_pointer p = t; p != header; p = p->parent)
 				++p->size;
-			// rebalance after insertion
-			insert_rebalance(t, true);
+			do
+			{
+				// rebalance after insertion
+				t = insert_rebalance(t->parent, t == t->parent->right);
+			} while (t->parent != header);
 		}
 	}
 	else if (t->left)
@@ -461,8 +491,11 @@ node_pointer insert_node(node_pointer t, Args&&... args)
 		// increases the size of nodes
 		for (node_pointer p = t; p != header; p = p->parent)
 			++p->size;
-		// rebalance after insertion
-		insert_rebalance(t, true);
+		do
+		{
+			// rebalance after insertion
+			t = insert_rebalance(t->parent, t == t->parent->right);
+		} while (t->parent != header);
 	}
 	else
 	{
@@ -474,27 +507,36 @@ node_pointer insert_node(node_pointer t, Args&&... args)
 		// increases the size of nodes
 		for (node_pointer p = t; p != header; p = p->parent)
 			++p->size;
-		// rebalance after insertion
-		insert_rebalance(t, false);
+		do
+		{
+			// rebalance after insertion
+			t = insert_rebalance(t->parent, t == t->parent->right);
+		} while (t->parent != header);
 	}
 	return n;
 }
 ```
 
-### deletion
+### Deletion
 
-Assuming the node to be deleted is T, it can be divided into the following two cases based on the number of child nodes of node T:
+​	Assuming the node to be deleted is T, it can be divided into the following two cases based on the number of child nodes of node T:
 
-1. Node T has at most one child node, and the node T can be deleted directly in this case. The number of nodes of its ancestor nodes should be reduced by 1. If node T has a child node L or R, replace node T with its child node. Finally, rebalance the parent node of node T.
-2. Node T has two child nodes, and the node T cannot be deleted directly in this case, otherwise the entire tree will be destroyed. When the number of nodes in the left subtree of node T is less than the number of nodes in the right subtree, select the node with the minimum value in its right subtree as the actual deletion node X; otherwise, select the node with the maximum value in its left subtree as the actual deletion node X. Then swap the positions of node T and node X, and it is completely the same as the first case.
+1. Node T has at most one child node.
 
-The C++ code for the deletion operation is as follows:
+​	In this case, the node T can be deleted directly. The number of nodes of its ancestor nodes should be reduced by 1. If node T has a child node L or R, replace node T with its child node. Finally, rebalance the parent node of node T.
+
+2. Node T has two child nodes.
+
+​	In this case, the node T cannot be deleted directly, otherwise the entire tree will be destroyed. When the number of nodes in the left subtree of node T is less than the number of nodes in the right subtree, select the node with the minimum value in its right subtree as the actual deletion node X; otherwise, select the node with the maximum value in its left subtree as the actual deletion node X. Then swap the positions of node T and node X, and it is completely the same as the first case.
+
+​	The C++ code for the deletion operation is as follows:
 
 ```C++
 void erase_node(node_pointer t)
 {
 	bool flag;
 	node_pointer x;
+	node_pointer parent;
 	// case 1. has one child node at most
 	if (!t->left || !t->right)
 	{
@@ -517,8 +559,13 @@ void erase_node(node_pointer t)
 		// reduces the number of nodes
 		for (node_pointer p = t->parent; p != header; p = p->parent)
 			--p->size;
-		// rebalance after deletion
-		erase_rebalance(t->parent, flag);
+		if (t != header)
+		{
+			// rebalance after deletion
+			node_pointer p = erase_rebalance(t->parent, flag);
+			while (p != header)
+				p = erase_rebalance(p->parent, p == p->parent->right);
+		}
 	}
 	// case 2. has two child nodes
 	else
@@ -541,7 +588,10 @@ void erase_node(node_pointer t)
 					x->right->parent = x->parent;
 				t->right->parent = x;
 				x->right = t->right;
+				parent = x->parent;
 			}
+			else
+				parent = x;
 			if (t == header->parent)
 				header->parent = x;
 			else if (t == t->parent->left)
@@ -569,7 +619,10 @@ void erase_node(node_pointer t)
 					x->left->parent = x->parent;
 				t->left->parent = x;
 				x->left = t->left;
+				parent = x->parent;
 			}
+			else
+				parent = x;
 			if (t == header->parent)
 				header->parent = x;
 			else if (t == t->parent->left)
@@ -580,21 +633,23 @@ void erase_node(node_pointer t)
 			x->size = t->size;
 		}
 		// rebalance after deletion
-		erase_rebalance(x->parent, flag);
+		node_pointer p = erase_rebalance(parent, flag);
+		while (p != header)
+			p = erase_rebalance(p->parent, p == p->parent->right);
 	}
 	// destroy node
 	this->destroy_node(t);
 }
 ```
 
-### selection
+### Selection
 
-Selection operation provides random access function in ABT.
+​	The select operation provides random access function in ABT.
 
-The C++ code for the insertion operation is as follows:
+​	The C++ code for the insertion operation is as follows:
 
 ```C++
-node_pointer select_node(size_type k) const
+node_pointer select_node(size_type k)
 {
 	node_pointer t = header->parent;
 	while (t)

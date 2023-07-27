@@ -544,7 +544,7 @@ public:
 	{
 		create_header();
 	}
-	ab_tree(const ab_tree<T, Allocator>& other)
+	ab_tree(const tree_type& other)
 		: ab_tree_node_allocator<T, Allocator>(other.get_allocator())
 		, header(nullptr)
 	{
@@ -552,7 +552,7 @@ public:
 		if (other.header->parent)
 			copy_node(other.header->parent);
 	}
-	ab_tree(const ab_tree<T, Allocator>& other, const Allocator& alloc)
+	ab_tree(const tree_type& other, const Allocator& alloc)
 		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
@@ -560,26 +560,26 @@ public:
 		if (other.header->parent)
 			copy_node(other.header->parent);
 	}
-	ab_tree(ab_tree<T, Allocator>&& other) noexcept
+	ab_tree(tree_type&& other) noexcept
 		: ab_tree_node_allocator<T, Allocator>(other.get_allocator())
 		, header(nullptr)
 	{
 		create_header();
 		swap(other);
 	}
-	ab_tree(ab_tree<T, Allocator>&& other, const Allocator& alloc) noexcept
+	ab_tree(tree_type&& other, const Allocator& alloc) noexcept
 		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
 		swap(other);
 	}
-	explicit ab_tree(std::initializer_list<T> ilist, const Allocator& alloc = Allocator())
+	ab_tree(std::initializer_list<T> ilist, const Allocator& alloc = Allocator())
 		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
-		insert(end(), ilist.begin(), ilist.end());
+		assign(ilist.begin(), ilist.end());
 	}
 
 	~ab_tree(void)
@@ -594,7 +594,7 @@ public:
 		{
 			clear();
 			if (other.header->parent)
-				copy_node(other.header->parent);
+				copy_root(other.header->parent);
 		}
 		return *this;
 	}
@@ -608,16 +608,17 @@ public:
 	inline void assign(size_type n, const_reference value)
 	{
 		clear();
-		insert(end(), n, value);
+		insert(cend(), n, value);
 	}
-	inline void assign(const_iterator first, const_iterator last)
+	template <class InputIt>
+	inline void assign(InputIt first, InputIt last)
 	{
 		clear();
-		insert(end(), first, last);
+		insert(cend(), first, last);
 	}
 	inline void assign(std::initializer_list<value_type> ilist)
 	{
-		assign(ilist);
+		assign(ilist.begin(), ilist.end());
 	}
 
 	// iterators:
@@ -736,30 +737,30 @@ public:
 
 	// element access:
 
-	inline reference operator[](size_type pos) noexcept
+	inline reference operator[](size_type idx) noexcept
 	{
-		return select_node(pos)->data;
+		return select_node(idx)->data;
 	}
-	inline const_reference operator[](size_type pos) const noexcept
+	inline const_reference operator[](size_type idx) const noexcept
 	{
-		return select_node(pos)->data;
+		return select_node(idx)->data;
 	}
 
-	inline reference at(size_type pos)
+	inline reference at(size_type idx)
 	{
 		if (empty())
 			throw std::domain_error(ABT_NOT_INITIALIZED);
-		if (pos >= size())
+		if (idx >= size())
 			throw std::out_of_range(ABT_OUT_OF_RANGE);
-		return select_node(pos)->data;
+		return select_node(idx)->data;
 	}
-	inline const_reference at(size_type pos) const
+	inline const_reference at(size_type idx) const
 	{
 		if (empty())
 			throw std::domain_error(ABT_NOT_INITIALIZED);
-		if (pos >= size())
+		if (idx >= size())
 			throw std::out_of_range(ABT_OUT_OF_RANGE);
-		return select_node(pos)->data;
+		return select_node(idx)->data;
 	}
 
 	inline reference front(void)
@@ -798,6 +799,11 @@ public:
 	inline iterator emplace(const_iterator pos, Args&&... args)
 	{
 		return iterator(insert_node(pos.get_pointer(), std::forward<Args>(args)...));
+	}
+	template <class... Args>
+	inline iterator emplace(size_type idx, Args&&... args)
+	{
+		return emplace(select(idx), std::forward<Args>(args)...);
 	}
 
 	inline void push_front(const_reference value)
@@ -840,34 +846,55 @@ public:
 	}
 	inline iterator insert(const_iterator pos, size_type n, const_reference value)
 	{
-		node_pointer t;
-		if (n == 0)
-			t = pos.get_pointer();
-		else
+		node_pointer r, t = pos.get_pointer();
+		if (n > 0)
 		{
-			t = insert_node(pos.get_pointer(), value);
+			r = insert_node(t, value);
 			for (; n > 1; --n)
-				insert_node(pos.get_pointer(), value);
+				insert_node(t, value);
 		}
-		return iterator(t);
+		else
+			r = t;
+		return iterator(r);
 	}
 	template <class InputIt>
 	inline iterator insert(const_iterator pos, InputIt first, InputIt last)
 	{
-		node_pointer t;
-		if (first == last)
-			t = pos.get_pointer();
-		else
+		node_pointer r, t = pos.get_pointer();
+		if (first != last)
 		{
-			t = insert_node(pos.get_pointer(), *first);
+			r = insert_node(t, *first);
 			for (++first; first != last; ++first)
-				insert_node(pos.get_pointer(), *first);
+				insert_node(t, *first);
 		}
-		return iterator(t);
+		else
+			r = t;
+		return iterator(r);
 	}
 	inline iterator insert(const_iterator pos, std::initializer_list<value_type> ilist)
 	{
 		return insert(pos, ilist.begin(), ilist.end());
+	}
+	inline iterator insert(size_type idx, const_reference value)
+	{
+		return insert(select(idx), value);
+	}
+	inline iterator insert(size_type idx, value_type&& value)
+	{
+		return insert(select(idx), std::forward<value_type>(value));
+	}
+	inline iterator insert(size_type idx, size_type n, const_reference value)
+	{
+		return insert(select(idx), n, value);
+	}
+	template <class InputIt>
+	inline iterator insert(size_type idx, InputIt first, InputIt last)
+	{
+		return insert(select(idx), first, last);
+	}
+	inline iterator insert(size_type idx, std::initializer_list<value_type> ilist)
+	{
+		return insert(idx, ilist.begin(), ilist.end());
 	}
 
 	inline iterator erase(const_iterator pos)
@@ -890,11 +917,28 @@ public:
 				erase(first++);
 		return next;
 	}
-
-	inline void swap(tree_type& other) noexcept
+	inline void erase(size_type idx)
 	{
-		if (this != &other)
-			std::swap(header, other.header);
+		node_pointer t = select_node(idx);
+		if (t != header)
+			erase_node(t);
+	}
+	inline void erase(size_type idx, size_type n)
+	{
+		iterator itr = select(idx);
+		node_pointer t = itr.get_pointer();
+		for (; n > 0 && itr != cend(); --n)
+		{
+			++itr;
+			erase_node(t);
+			t = itr.get_pointer();
+		}
+	}
+
+	inline void swap(tree_type& rhs) noexcept
+	{
+		if (this != &rhs)
+			std::swap(header, rhs.header);
 	}
 
 	inline void clear(void)
@@ -910,13 +954,13 @@ public:
 
 	// operations:
 
-	inline iterator select(size_type pos) noexcept
+	inline iterator select(size_type idx) noexcept
 	{
-		return iterator(select_node(pos));
+		return iterator(select_node(idx));
 	}
-	inline const_iterator select(size_type pos) const noexcept
+	inline const_iterator select(size_type idx) const noexcept
 	{
-		return const_iterator(select_node(pos));
+		return const_iterator(select_node(idx));
 	}
 
 private:
@@ -1077,8 +1121,11 @@ private:
 				// increases the size of nodes
 				for (node_pointer p = t; p != header; p = p->parent)
 					++p->size;
-				// rebalance after insertion
-				insert_rebalance(t, true);
+				do
+				{
+					// rebalance after insertion
+					t = insert_rebalance(t->parent, t == t->parent->right);
+				} while (t->parent != header);
 			}
 		}
 		else if (t->left)
@@ -1092,8 +1139,11 @@ private:
 			// increases the size of nodes
 			for (node_pointer p = t; p != header; p = p->parent)
 				++p->size;
-			// rebalance after insertion
-			insert_rebalance(t, true);
+			do
+			{
+				// rebalance after insertion
+				t = insert_rebalance(t->parent, t == t->parent->right);
+			} while (t->parent != header);
 		}
 		else
 		{
@@ -1105,8 +1155,11 @@ private:
 			// increases the size of nodes
 			for (node_pointer p = t; p != header; p = p->parent)
 				++p->size;
-			// rebalance after insertion
-			insert_rebalance(t, false);
+			do
+			{
+				// rebalance after insertion
+				t = insert_rebalance(t->parent, t == t->parent->right);
+			} while (t->parent != header);
 		}
 		return n;
 	}
@@ -1115,6 +1168,7 @@ private:
 	{
 		bool flag;
 		node_pointer x;
+		node_pointer parent;
 		// case 1. has one child node at most
 		if (!t->left || !t->right)
 		{
@@ -1137,8 +1191,13 @@ private:
 			// reduces the number of nodes
 			for (node_pointer p = t->parent; p != header; p = p->parent)
 				--p->size;
-			// rebalance after deletion
-			erase_rebalance(t->parent, flag);
+			if (t != header)
+			{
+				// rebalance after deletion
+				node_pointer p = erase_rebalance(t->parent, flag);
+				while (p != header)
+					p = erase_rebalance(p->parent, p == p->parent->right);
+			}
 		}
 		// case 2. has two child nodes
 		else
@@ -1161,7 +1220,10 @@ private:
 						x->right->parent = x->parent;
 					t->right->parent = x;
 					x->right = t->right;
+					parent = x->parent;
 				}
+				else
+					parent = x;
 				if (t == header->parent)
 					header->parent = x;
 				else if (t == t->parent->left)
@@ -1189,7 +1251,10 @@ private:
 						x->left->parent = x->parent;
 					t->left->parent = x;
 					x->left = t->left;
+					parent = x->parent;
 				}
+				else
+					parent = x;
 				if (t == header->parent)
 					header->parent = x;
 				else if (t == t->parent->left)
@@ -1200,7 +1265,9 @@ private:
 				x->size = t->size;
 			}
 			// rebalance after deletion
-			erase_rebalance(x->parent, flag);
+			node_pointer p = erase_rebalance(parent, flag);
+			while (p != header)
+				p = erase_rebalance(p->parent, p == p->parent->right);
 		}
 		// destroy node
 		this->destroy_node(t);
@@ -1269,7 +1336,7 @@ private:
 		return l;
 	}
 
-	void insert_rebalance(node_pointer t, bool flag)
+	node_pointer insert_rebalance(node_pointer t, bool flag)
 	{
 		if (flag)
 		{
@@ -1281,14 +1348,16 @@ private:
 				{
 					t->right = right_rotate(t->right);
 					t = left_rotate(t);
-					insert_rebalance(t->left, false);
-					insert_rebalance(t->right, true);
+					t->left = insert_rebalance(t->left, false);
+					t->right = insert_rebalance(t->right, true);
+					t = insert_rebalance(t, true);
 				}
 				// case 2. size(T.left) < size(T.right.right)
 				else if (t->right->right && left_size < t->right->right->size)
 				{
 					t = left_rotate(t);
-					insert_rebalance(t->left, false);
+					t->left = insert_rebalance(t->left, false);
+					t = insert_rebalance(t, true);
 				}
 			}
 		}
@@ -1302,45 +1371,25 @@ private:
 				{
 					t->left = left_rotate(t->left);
 					t = right_rotate(t);
-					insert_rebalance(t->left, false);
-					insert_rebalance(t->right, true);
+					t->left = insert_rebalance(t->left, false);
+					t->right = insert_rebalance(t->right, true);
+					t = insert_rebalance(t, false);
 				}
 				// case 4. size(T.right) < size(T.left.left)
 				else if (t->left->left && right_size < t->left->left->size)
 				{
 					t = right_rotate(t);
-					insert_rebalance(t->right, true);
+					t->right = insert_rebalance(t->right, true);
+					t = insert_rebalance(t, false);
 				}
 			}
 		}
-		if (t->parent != header)
-			insert_rebalance(t->parent, t == t->parent->right);
+		return t;
 	}
 
-	void erase_rebalance(node_pointer t, bool flag)
+	node_pointer erase_rebalance(node_pointer t, bool flag)
 	{
-		if (flag)
-		{
-			if (t->left)
-			{
-				size_type right_size = t->right ? t->right->size : 0;
-				// case 3. size(T.right) < size(T.left.right)
-				if (t->left->right && right_size < t->left->right->size)
-				{
-					t->left = left_rotate(t->left);
-					t = right_rotate(t);
-					erase_rebalance(t->left, false);
-					erase_rebalance(t->right, true);
-				}
-				// case 4. size(T.right) < size(T.left.left)
-				else if (t->left->left && right_size < t->left->left->size)
-				{
-					t = right_rotate(t);
-					erase_rebalance(t->right, true);
-				}
-			}
-		}
-		else
+		if (!flag)
 		{
 			if (t->right)
 			{
@@ -1350,19 +1399,43 @@ private:
 				{
 					t->right = right_rotate(t->right);
 					t = left_rotate(t);
-					erase_rebalance(t->left, false);
-					erase_rebalance(t->right, true);
+					t->left = erase_rebalance(t->left, true);
+					t->right = erase_rebalance(t->right, false);
+					t = erase_rebalance(t, false);
 				}
 				// case 2. size(T.left) < size(T.right.right)
 				else if (t->right->right && left_size < t->right->right->size)
 				{
 					t = left_rotate(t);
-					erase_rebalance(t->left, false);
+					t->left = erase_rebalance(t->left, true);
+					t = erase_rebalance(t, false);
 				}
 			}
 		}
-		if (t->parent != header)
-			erase_rebalance(t->parent, t == t->parent->right);
+		else
+		{
+			if (t->left)
+			{
+				size_type right_size = t->right ? t->right->size : 0;
+				// case 3. size(T.right) < size(T.left.right)
+				if (t->left->right && right_size < t->left->right->size)
+				{
+					t->left = left_rotate(t->left);
+					t = right_rotate(t);
+					t->left = erase_rebalance(t->left, true);
+					t->right = erase_rebalance(t->right, false);
+					t = erase_rebalance(t, true);
+				}
+				// case 4. size(T.right) < size(T.left.left)
+				else if (t->left->left && right_size < t->left->left->size)
+				{
+					t = right_rotate(t);
+					t->right = erase_rebalance(t->right, false);
+					t = erase_rebalance(t, true);
+				}
+			}
+		}
+		return t;
 	}
 
 private:

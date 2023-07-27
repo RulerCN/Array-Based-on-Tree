@@ -40,10 +40,8 @@ int main(void)
     std::cout << "}; \n";
 
     arr[1] = -1;
-    // Selects the third element.
-    auto itr = arr.select(2);
     // Inserts tow elements.
-    arr.insert(itr, { 10, 16 });
+    arr.insert(2, { 10, 16 });
 
     // Prints all elements of an array.
     std::cout << "array = { ";
