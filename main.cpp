@@ -31,21 +31,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main(void)
 {
-    // Creates an array containing integers.
-    ab_tree<int> arr({ 7, 1, 8, 0 });
-    // Prints all elements of an array.
-    std::cout << "array = { ";
-    for (auto itr = arr.cbegin(); itr != arr.cend(); ++itr)
+    // Creates a AB-Tree containing integers.
+    ab_tree<int> abt({ 7, 1, 8, 0 });
+    // Prints all elements of the AB-Tree.
+    std::cout << "ab-tree = { ";
+    for (auto itr = abt.cbegin(); itr != abt.cend(); ++itr)
         std::cout << *itr << ", ";
     std::cout << "}; \n";
 
-    arr[1] = -1;
+    // Subscript operation.
+    abt[1] = -1;
     // Inserts tow elements.
-    arr.insert(2, { 10, 16 });
+    abt.insert(2, { 10, 16 });
 
-    // Prints all elements of an array.
-    std::cout << "array = { ";
-    for (const auto& ele : arr)
+    // Prints all elements of the AB-Tree.
+    std::cout << "ab-tree = { ";
+    for (const auto& ele : abt)
         std::cout << ele << ", ";
     std::cout << "}; \n";
 

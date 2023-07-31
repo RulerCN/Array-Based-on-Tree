@@ -463,9 +463,6 @@ public:
 		: allocator(std::forward<Allocator>(alloc))
 	{}
 
-	~ab_tree_node_allocator(void)
-	{}
-
 	// ab_tree_node_allocator operations:
 
 	inline allocator_type get_allocator(void) noexcept
@@ -514,8 +511,8 @@ public:
 	using tree_type                        = ab_tree<T, Allocator>;
 	using tree_traits_type                 = std::allocator_traits<Allocator>;
 	using node_type                        = typename ab_tree_node<T>::node_type;
-	using node_pointer                     = typename node_type*;
-	using const_node_pointer               = typename const node_type*;
+	using node_pointer                     = typename ab_tree_node<T>::node_pointer;
+	using const_node_pointer               = typename ab_tree_node<T>::const_node_pointer;
 	using node_allocator_type              = typename tree_traits_type::template rebind_alloc<node_type>;
 	using allocator_type                   = typename tree_traits_type::template rebind_alloc<T>;
 	using traits_type                      = typename tree_traits_type::template rebind_traits<T>;
@@ -543,6 +540,14 @@ public:
 		, header(nullptr)
 	{
 		create_header();
+	}
+	template <class InputIt>
+	ab_tree(InputIt first, InputIt last, const Allocator& alloc)
+		: ab_tree_node_allocator<T, Allocator>(alloc)
+		, header(nullptr)
+	{
+		create_header();
+		insert(cend(), first, last);
 	}
 	ab_tree(const tree_type& other)
 		: ab_tree_node_allocator<T, Allocator>(other.get_allocator())
@@ -574,12 +579,12 @@ public:
 		create_header();
 		swap(other);
 	}
-	ab_tree(std::initializer_list<T> ilist, const Allocator& alloc = Allocator())
+	ab_tree(std::initializer_list<T> init, const Allocator& alloc = Allocator())
 		: ab_tree_node_allocator<T, Allocator>(alloc)
 		, header(nullptr)
 	{
 		create_header();
-		assign(ilist.begin(), ilist.end());
+		assign(init.begin(), init.end());
 	}
 
 	~ab_tree(void)
@@ -616,9 +621,9 @@ public:
 		clear();
 		insert(cend(), first, last);
 	}
-	inline void assign(std::initializer_list<value_type> ilist)
+	inline void assign(std::initializer_list<value_type> init)
 	{
-		assign(ilist.begin(), ilist.end());
+		assign(init.begin(), init.end());
 	}
 
 	// iterators:
@@ -871,9 +876,9 @@ public:
 			r = t;
 		return iterator(r);
 	}
-	inline iterator insert(const_iterator pos, std::initializer_list<value_type> ilist)
+	inline iterator insert(const_iterator pos, std::initializer_list<value_type> init)
 	{
-		return insert(pos, ilist.begin(), ilist.end());
+		return insert(pos, init.begin(), init.end());
 	}
 	inline iterator insert(size_type idx, const_reference value)
 	{
@@ -892,9 +897,9 @@ public:
 	{
 		return insert(select(idx), first, last);
 	}
-	inline iterator insert(size_type idx, std::initializer_list<value_type> ilist)
+	inline iterator insert(size_type idx, std::initializer_list<value_type> init)
 	{
-		return insert(idx, ilist.begin(), ilist.end());
+		return insert(idx, init.begin(), init.end());
 	}
 
 	inline iterator erase(const_iterator pos)
@@ -1336,7 +1341,7 @@ private:
 		return l;
 	}
 
-	node_pointer insert_rebalance(node_pointer t, bool flag)
+	node_pointer insert_rebalance(node_pointer t, bool flag) const noexcept
 	{
 		if (flag)
 		{
@@ -1387,7 +1392,7 @@ private:
 		return t;
 	}
 
-	node_pointer erase_rebalance(node_pointer t, bool flag)
+	node_pointer erase_rebalance(node_pointer t, bool flag) const noexcept
 	{
 		if (!flag)
 		{

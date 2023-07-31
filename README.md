@@ -14,24 +14,22 @@
 
 int main(void)
 {
-    // Creates an array containing integers.
-    ab_tree<int> arr({ 7, 1, 8, 0 });
-
-    // Prints all elements of an array.
-    std::cout << "array = { ";
-    for (auto itr = arr.cbegin(); itr != arr.cend(); ++itr)
+    // Creates a AB-Tree containing integers.
+    ab_tree<int> abt({ 7, 1, 8, 0 });
+    // Prints all elements of the AB-Tree.
+    std::cout << "ab-tree = { ";
+    for (auto itr = abt.cbegin(); itr != abt.cend(); ++itr)
         std::cout << *itr << ", ";
     std::cout << "}; \n";
 
     // Subscript operation.
-    arr[1] = -1;
-
+    abt[1] = -1;
     // Inserts tow elements.
-    arr.insert(2, { 10, 16 });
+    abt.insert(2, { 10, 16 });
 
-    // Prints all elements of an array.
-    std::cout << "array = { ";
-    for (const auto& ele : arr)
+    // Prints all elements of the AB-Tree.
+    std::cout << "ab-tree = { ";
+    for (const auto& ele : abt)
         std::cout << ele << ", ";
     std::cout << "}; \n";
 
@@ -42,8 +40,8 @@ int main(void)
 ​	Output:
 
 ```C++
-array = { 7, 1, 8, 0, };
-array = { 7, -1, 10, 16, 8, 0, };
+ab-tree = { 7, 1, 8, 0, };
+ab-tree = { 7, -1, 10, 16, 8, 0, };
 ```
 
 ## Interface
@@ -674,3 +672,4 @@ node_pointer select_node(size_type k)
 ------
 
 Copyright (c) 2023, Ruler. All rights reserved.
+
